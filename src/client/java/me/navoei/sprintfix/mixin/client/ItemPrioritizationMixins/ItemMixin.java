@@ -4,6 +4,7 @@ import me.navoei.sprintfix.client.SprintFixClient;
 import me.navoei.sprintfix.util.Feature;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.telemetry.TelemetryProperty;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionHand;
@@ -11,6 +12,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -72,7 +74,9 @@ public abstract class ItemMixin {
                 }
                 if (!hitResult.getType().equals(HitResult.Type.ENTITY)) {
                     UseOnContext useOnContext = new UseOnContext(localPlayer, InteractionHand.OFF_HAND, (BlockHitResult) hitResult);
-                    interactionResult = offHandItemStack.useOn(useOnContext);
+                    int offHandItemCount = localPlayer.getOffhandItem().getCount();
+                    interactionResult = localPlayer.getOffhandItem().useOn(useOnContext);
+                    localPlayer.getOffhandItem().setCount(offHandItemCount);
                     if (interactionResult instanceof InteractionResult.Success) {
                         localPlayer.stopUsingItem();
                         player.stopUsingItem();
